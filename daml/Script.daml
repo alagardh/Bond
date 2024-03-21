@@ -37,41 +37,41 @@ setup = script do
   createUser (User investorC (Some (investC))) [CanActAs (investC)]
 
 
-  cid <- submit gs do
-    createCmd BondRequest with
-      issuer = bank
-      buyer = gs
-      amountRequest = 500
+  -- cid <- submit gs do
+  --   createCmd BondRequest with
+  --     issuer = bank
+  --     buyer = gs
+  --     amountRequest = 500
 
-  submit bank do
-    exerciseCmd cid ApproveBondRequest
+  -- submit bank do
+  --   exerciseCmd cid AllowMint
   
-  bnyid <- submit bny do
-    createCmd TokenRequest
-      with
-        transferFrom =  gs
-        transferTo = bny
-        transferAmount  = 100
+  -- bnyid <- submit bny do
+  --   createCmd TokenRequest
+  --     with
+  --       transferFrom =  gs
+  --       transferTo = bny
+  --       transferAmount  = 100
 
-  bnyid1 <-submit gs do
-    exerciseCmd bnyid  AllowToMintTokens
+  -- bnyid1 <-submit gs do
+  --   exerciseCmd bnyid  AllowTransferTokens
 
-  cide <- submit bofa  do
-    createCmd AccountCreationRequest with
-      accountHolder = bofa
-      holderLocateIn = bny
+  -- cide <- submit bofa  do
+  --   createCmd AccountCreationRequest with
+  --     accountHolder = bofa
+  --     holderLocateIn = bny
 
  
-  submit bny do
-    exerciseCmd cide ApproveRequest
+  -- submit bny do
+  --   exerciseCmd cide ApproveRequest
 
-  [(bofaId, bofaData)] <- query @Account bofa
+  -- [(bofaId, bofaData)] <- query @Account bofa
 
-  submit bny do
-    exerciseCmd bofaId TokenDistribute
-      with 
-        transferTo = bofa
-        amount = 23
+  -- submit bny do
+  --   exerciseCmd bofaId TokenDistribute
+  --     with 
+  --       transferTo = bofa
+  --       amount = 23
 
 
   return()

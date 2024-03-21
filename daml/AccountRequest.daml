@@ -8,8 +8,8 @@ import Account
 --  Clients from BNY requesting to create the account to hold the tokens and bny accepting that
 template AccountCreationRequest
   with
-    holderLocateIn : Party
     accountHolder : Party
+    holderLocateIn : Party
   
   where 
     signatory  accountHolder

@@ -16,7 +16,7 @@ template TokenRequest
 
     ensure transferTo /= transferFrom
 
-    choice AllowToMintTokens : ContractId Account
+    choice AllowTransferTokens : ContractId Account
       controller transferFrom
       do
         currentAccountDetails <- fetchByKey @Account (transferFrom,transferFrom)

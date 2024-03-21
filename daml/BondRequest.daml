@@ -16,7 +16,7 @@ template BondRequest
 
     ensure buyer /= issuer
 
-    choice ApproveBondRequest :  (ContractId Account)
+    choice AllowMint :  (ContractId Account)
       controller issuer
         do
           isExists <- lookupByKey @Account (buyer,buyer)

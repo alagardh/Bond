@@ -12,6 +12,8 @@ template Account
 
   where
     signatory holderLocateIn , accountHolder
+
+    ensure balance >= 0
     
     key  (accountHolder,holderLocateIn) : (Party,Party)
     maintainer key._1
