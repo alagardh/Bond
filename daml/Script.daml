@@ -1,0 +1,78 @@
+module Script where
+
+import Daml.Script
+import BondRequest
+import Account
+import AccountRequest
+import TokenRequest
+
+setup : Script ()
+setup = script do
+  bank <- allocatePartyWithHint "EuropeanBank" (PartyIdHint "EuropeanBank")
+  gs <- allocatePartyWithHint "GSBank" (PartyIdHint "GSBank")
+  bny <- allocatePartyWithHint "BNYMellon" (PartyIdHint "BNYMellon")
+  bofa <- allocatePartyWithHint "BankBofa" (PartyIdHint "BankBofa")
+  sant <- allocatePartyWithHint "BankSant" (PartyIdHint "BankSant")
+  investA <- allocatePartyWithHint "InvestorA" (PartyIdHint "InvestorA")
+  investB <- allocatePartyWithHint "InvestorB" (PartyIdHint "InvestorB")
+  investC <- allocatePartyWithHint "InvestorC" (PartyIdHint "InvestorC")
+    
+  europeanBank <- validateUserId "EuropeanBank"
+  gsbank <- validateUserId "GSBank"
+  bnymellon <- validateUserId "BNYMellon"
+  bankbofa <- validateUserId "BankBofa"
+  banksant <- validateUserId "BankSant"
+  investorA <- validateUserId "InvestorA"
+  investorB <- validateUserId "InvestorB"
+  investorC <- validateUserId "InvestorC"
+
+  -- create user for seller and buyer
+  createUser (User europeanBank (Some (bank))) [CanActAs (bank)]
+  createUser (User gsbank (Some (gs))) [CanActAs (gs)]
+  createUser (User bnymellon (Some (bny))) [CanActAs (bny)]
+  createUser (User bankbofa (Some (bofa))) [CanActAs (bofa)]
+  createUser (User banksant (Some (sant))) [CanActAs (sant)]
+  createUser (User investorA (Some (investA))) [CanActAs (investA)]
+  createUser (User investorB (Some (investB))) [CanActAs (investB)]
+  createUser (User investorC (Some (investC))) [CanActAs (investC)]
+
+
+  cid <- submit gs do
+    createCmd BondRequest with
+      issuer = bank
+      buyer = gs
+      amountRequest = 500
+
+  submit bank do
+    exerciseCmd cid ApproveBondRequest
+  
+  bnyid <- submit bny do
+    createCmd TokenRequest
+      with
+        transferFrom =  gs
+        transferTo = bny
+        transferAmount  = 100
+
+  bnyid1 <-submit gs do
+    exerciseCmd bnyid  AllowToMintTokens
+
+  cide <- submit bofa  do
+    createCmd AccountCreationRequest with
+      accountHolder = bofa
+      holderLocateIn = bny
+
+ 
+  submit bny do
+    exerciseCmd cide ApproveRequest
+
+  [(bofaId, bofaData)] <- query @Account bofa
+
+  submit bny do
+    exerciseCmd bofaId TokenDistribute
+      with 
+        transferTo = bofa
+        amount = 23
+
+
+  return()
+    

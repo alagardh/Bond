@@ -1,0 +1,41 @@
+module BondRequest where
+
+import DA.Optional
+import Account
+
+
+-- GS requesting bon from European bank and european bank accepting that.
+template BondRequest
+  with
+    issuer : Party
+    buyer: Party
+    amountRequest: Int
+  where
+    signatory buyer, 
+    observer issuer
+
+    ensure buyer /= issuer
+
+    choice ApproveBondRequest :  (ContractId Account)
+      controller issuer
+        do
+          isExists <- lookupByKey @Account (buyer,buyer)
+          if(isNone isExists) then
+            do
+              create Account with
+                accountHolder = buyer
+                balance = amountRequest
+                holderLocateIn = buyer
+                afterDistribute = 0
+          else 
+            do
+              fetchData <- fetchByKey @Account (buyer,buyer)
+              archive fetchData._1
+              create Account with
+                accountHolder = fetchData._2.accountHolder
+                balance = fetchData._2.balance+amountRequest
+                holderLocateIn = fetchData._2.holderLocateIn
+                afterDistribute = 0
+          
+
+
