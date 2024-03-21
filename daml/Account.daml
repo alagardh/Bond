@@ -1,6 +1,5 @@
 module Account where
 
-import DA.Optional
 
 
 template Account
@@ -19,35 +18,24 @@ template Account
     maintainer key._1
 
 
-    nonconsuming choice TokenDistribute : Optional (ContractId Account)
+    choice TokenDistribute :  (ContractId Account)
       with
-        transferTo : Party
         amount : Int
       controller holderLocateIn
         do
-          assertMsg "transferTo and holder should not be same" (transferTo /= holderLocateIn)
-          isExists <- lookupByKey @Account (transferTo,holderLocateIn)
+          assertMsg "transferTo and holder should not be same" (accountHolder /= holderLocateIn)
           getholderData <- fetchByKey @Account (holderLocateIn,holderLocateIn)
-          if(isSome isExists) then
-            do
-            assertMsg "transfer is asset is more than holdings" (getholderData._2.afterDistribute >= amount)
-            contractDetails <- fetchByKey @Account (transferTo,holderLocateIn)
-            archive contractDetails._1
-            cid <- create Account 
-              with
-                accountHolder = contractDetails._2.accountHolder
-                balance = contractDetails._2.balance + amount
-                holderLocateIn = contractDetails._2.holderLocateIn
-                afterDistribute = contractDetails._2.afterDistribute 
-            archive getholderData._1
-            create Account with
-                accountHolder = getholderData._2.accountHolder
-                balance = getholderData._2.balance
-                holderLocateIn = getholderData._2.holderLocateIn
-                afterDistribute = getholderData._2.afterDistribute - amount
-            return $ Some cid
-          else
-            return None
+          assertMsg "transfer is asset is more than holdings" (getholderData._2.afterDistribute >= amount)
+          cid <- create this 
+            with
+              balance = balance + amount 
+          archive getholderData._1
+          create Account with
+              accountHolder = getholderData._2.accountHolder
+              balance = getholderData._2.balance
+              holderLocateIn = getholderData._2.holderLocateIn
+              afterDistribute = getholderData._2.afterDistribute - amount
+          return  cid
 
     
   

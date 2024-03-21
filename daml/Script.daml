@@ -70,7 +70,6 @@ setup = script do
   -- submit bny do
   --   exerciseCmd bofaId TokenDistribute
   --     with 
-  --       transferTo = bofa
   --       amount = 23
 
 
