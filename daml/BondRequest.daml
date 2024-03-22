@@ -1,7 +1,6 @@
 module BondRequest where
 
-import DA.Optional
-import Account
+import AddToWallet
 
 
 -- GS requesting bon from European bank and european bank accepting that.
@@ -16,26 +15,13 @@ template BondRequest
 
     ensure buyer /= issuer
 
-    choice AllowMint :  (ContractId Account)
+    choice AllowMint :  (ContractId AddToWallet)
       controller issuer
         do
-          isExists <- lookupByKey @Account (buyer,buyer)
-          if(isNone isExists) then
-            do
-              create Account with
-                accountHolder = buyer
-                balance = amountRequest
-                holderLocateIn = buyer
-                afterDistribute = 0
-          else 
-            do
-              fetchData <- fetchByKey @Account (buyer,buyer)
-              archive fetchData._1
-              create Account with
-                accountHolder = fetchData._2.accountHolder
-                balance = fetchData._2.balance+amountRequest
-                holderLocateIn = fetchData._2.holderLocateIn
-                afterDistribute = 0
-          
+          create AddToWallet with
+            accountHolder = buyer
+            balance = amountRequest
+            holderLocateIn = buyer
+            afterDistribute = amountRequest
 
 

@@ -5,6 +5,7 @@ import BondRequest
 import Account
 import AccountRequest
 import TokenRequest
+import AddToWallet
 
 setup : Script ()
 setup = script do
@@ -43,8 +44,25 @@ setup = script do
   --     buyer = gs
   --     amountRequest = 500
 
-  -- submit bank do
+  -- cid1 <- submit gs do
+  --   createCmd BondRequest with
+  --     issuer = bank
+  --     buyer = gs
+  --     amountRequest = 100
+
+  
+  -- cid2 <- submit bank do
   --   exerciseCmd cid AllowMint
+
+  -- submit gs do
+  --   exerciseCmd cid2 AddWallet
+
+  -- cid3 <- submit bank do
+  --   exerciseCmd cid1 AllowMint
+
+  -- submit gs do
+  --   exerciseCmd cid3 AddWallet
+
   
   -- bnyid <- submit bny do
   --   createCmd TokenRequest
