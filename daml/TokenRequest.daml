@@ -1,6 +1,7 @@
 module TokenRequest where
 
 import DA.Optional
+import AddToWallet
 import Account
 
 
@@ -16,33 +17,21 @@ template TokenRequest
 
     ensure transferTo /= transferFrom
 
-    choice AllowTransferTokens : ContractId Account
+    choice AllowTransferTokens : ContractId AddToWallet
       controller transferFrom
       do
         currentAccountDetails <- fetchByKey @Account (transferFrom,transferFrom)
-        assertMsg "request amount is greater than current holdings" (currentAccountDetails._2.balance >= transferAmount)
-        isExists <- lookupByKey @Account (transferTo,transferTo) 
-        if(isNone isExists) then
-            do
-            create Account with
+        assertMsg "request amount is greater than current holdings" (currentAccountDetails._2.afterDistribute >= transferAmount)
+        cid <- create AddToWallet with
               accountHolder = transferTo
               balance = transferAmount
               holderLocateIn = transferTo
               afterDistribute = transferAmount
-          else
-            do
-              contractDetails <- fetchByKey @Account (transferTo,transferTo)
-              archive contractDetails._1
-              create Account with
-                accountHolder = transferTo
-                balance = contractDetails._2.balance + transferAmount 
-                holderLocateIn = transferTo
-                afterDistribute = contractDetails._2.afterDistribute
         archive currentAccountDetails._1
         create Account with
           accountHolder = currentAccountDetails._2.accountHolder
           balance = currentAccountDetails._2.balance - transferAmount 
           holderLocateIn = currentAccountDetails._2.accountHolder
           afterDistribute = currentAccountDetails._2.afterDistribute - transferAmount
-    
+        return cid
 
