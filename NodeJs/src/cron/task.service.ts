@@ -14,7 +14,7 @@ export class TaskService {
   }
 
 
-  @Cron(CronExpression.EVERY_5_MINUTES)
+  @Cron(CronExpression.EVERY_10_SECONDS)
   async checkActiveContract() {
     this.logger.debug('Called every 10 minutes');
     const bearer = await this.tokenization.generateHS256([process.env.bny]);
