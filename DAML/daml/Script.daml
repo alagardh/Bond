@@ -4,6 +4,7 @@ import Daml.Script
 import BondRequest
 import Account
 import AddToWallet
+import DA.Date
 
 setup : Script ()
 setup = script do
@@ -72,7 +73,7 @@ setup = script do
         transferType = "receive"
         requestTo = gs
         quantity = 123
-        tradeDate = "2014-09-12"
+        tradeDate = date 2024 Jun 14
         senderParty = "adsdsd"
         receiverParty = "ddfd"
 

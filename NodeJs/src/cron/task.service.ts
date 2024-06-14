@@ -1,13 +1,15 @@
 /* eslint-disable prettier/prettier */
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
+import { TokenizationService } from 'src/tokenization/tokenization.service.';
 import { Tokenization } from 'src/utils/tokenization';
 
 @Injectable()
 export class TaskService {
   private readonly logger = new Logger(TaskService.name);
 
-  constructor(private tokenization : Tokenization){
+  constructor(private tokenization : Tokenization,
+            private ethService : TokenizationService){
   }
 
 
@@ -26,7 +28,8 @@ export class TaskService {
       console.log(activeContracts.result);
       activeContracts.result.forEach(async contract => {
         if(contract.payload.approveStatus){
-          console.log(contract.payload)
+          await this.ethService.addQuantity(contract)
+
         }
       });
     } catch (error) {

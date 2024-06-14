@@ -23,7 +23,7 @@ template Account
         transferType: Text
         requestTo:Party
         quantity: Int
-        tradeDate:Text
+        tradeDate:Date
         senderParty: Text
         receiverParty: Text
       controller accountHolder
@@ -60,7 +60,7 @@ template Trade
     requestFrom: Party
     requestTo:Party
     quantity: Int
-    tradeDate:Text
+    tradeDate:Date
     senderParty: Text
     receiverParty: Text
     approveStatus: Bool
