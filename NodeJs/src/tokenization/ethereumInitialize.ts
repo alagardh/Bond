@@ -5,10 +5,12 @@ import 'dotenv/config';
 import HDWalletProvider from '@truffle/hdwallet-provider';
 import Web3 from 'web3';
 import { ASSET_MIGRATION } from 'src/utils/abi/AssetMigration'; 
+import { Injectable } from '@nestjs/common';
 
 let ethContract : any;
 let web3 : any;
 
+@Injectable()
 export class EthereumInitialize {
      
   public async initiConnection(){

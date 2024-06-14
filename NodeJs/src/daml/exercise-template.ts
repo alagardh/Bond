@@ -4,6 +4,7 @@ import { Tokenization } from 'src/utils/tokenization';
 
 
 
+
 export class ExerciseTemplate {
 
     constructor(private tokenization: Tokenization){

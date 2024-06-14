@@ -3,7 +3,7 @@ import { Injectable } from "@nestjs/common";
 /* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable prettier/prettier */
 import 'dotenv/config';
-import { EthereumInitialize } from "./initialize";
+import { EthereumInitialize } from "./ethereumInitialize";
 import { ExerciseTemplate } from "src/daml/exercise-template";
 
 let ethContract : any;
