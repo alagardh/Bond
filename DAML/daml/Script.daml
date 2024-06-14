@@ -3,8 +3,6 @@ module Script where
 import Daml.Script
 import BondRequest
 import Account
-import AccountRequest
-import TokenRequest
 import AddToWallet
 
 setup : Script ()
@@ -38,30 +36,48 @@ setup = script do
   createUser (User investorC (Some (investC))) [CanActAs (investC)]
 
 
-  -- cid <- submit gs do
-  --   createCmd BondRequest with
-  --     issuer = bank
-  --     buyer = gs
-  --     amountRequest = 500
+  cid <- submit gs do
+    createCmd BondRequest with
+      issuer = bank
+      buyer = gs
+      amountRequest = 500
 
-  -- cid1 <- submit gs do
-  --   createCmd BondRequest with
-  --     issuer = bank
-  --     buyer = gs
-  --     amountRequest = 100
+  cid1 <- submit gs do
+    createCmd BondRequest with
+      issuer = bank
+      buyer = gs
+      amountRequest = 100
 
   
-  -- cid2 <- submit bank do
-  --   exerciseCmd cid AllowMint
+  cid2 <- submit bank do
+    exerciseCmd cid AllowMint
 
-  -- submit gs do
-  --   exerciseCmd cid2 AddWallet
+  submit gs do
+    exerciseCmd cid2 AddWallet
 
-  -- cid3 <- submit bank do
-  --   exerciseCmd cid1 AllowMint
+  cid3 <- submit bank do
+    exerciseCmd cid1 AllowMint
 
-  -- submit gs do
-  --   exerciseCmd cid3 AddWallet
+  submit gs do
+    exerciseCmd cid3 AddWallet
+
+  bnyAccountId <- submit bny do
+    createCmd Account with
+      accountHolder = bny
+      balance = 0
+
+  postId <- submit bny do
+    exerciseCmd bnyAccountId PostTrade
+      with
+        transferType = "receive"
+        requestTo = gs
+        quantity = 123
+        tradeDate = "2014-09-12"
+        senderParty = "adsdsd"
+        receiverParty = "ddfd"
+
+  
+
 
   
   -- bnyid <- submit bny do

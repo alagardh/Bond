@@ -1,0 +1,92 @@
+module Account where
+
+
+
+template Account
+  with
+    accountHolder : Party
+    balance : Int
+    
+
+  where
+    signatory  accountHolder
+
+    ensure balance >= 0
+    
+    key  (accountHolder) : (Party)
+    maintainer key
+
+
+    
+    nonconsuming choice PostTrade : ContractId Trade
+      with
+        transferType: Text
+        requestTo:Party
+        quantity: Int
+        tradeDate:Text
+        senderParty: Text
+        receiverParty: Text
+      controller accountHolder
+        do
+          create Trade
+            with
+              transferType = transferType
+              requestFrom = accountHolder
+              requestTo  = requestTo
+              quantity = quantity
+              tradeDate = tradeDate
+              senderParty = senderParty
+              receiverParty = receiverParty
+              approveStatus = False
+
+    choice Withdraw : ContractId Account
+      with
+        amount : Int
+      controller accountHolder
+        do
+          create this with
+            balance = balance - amount
+    choice Deposite: ContractId Account
+      with
+        amount: Int
+      controller accountHolder
+        do
+          create this with
+            balance = balance - amount
+      
+template Trade
+  with
+    transferType: Text
+    requestFrom: Party
+    requestTo:Party
+    quantity: Int
+    tradeDate:Text
+    senderParty: Text
+    receiverParty: Text
+    approveStatus: Bool
+
+  where
+    signatory requestFrom
+    observer requestTo
+    key(requestFrom,requestTo,senderParty,receiverParty) : (Party,Party,Text,Text)
+    maintainer key._1
+
+    choice ApproveTrade: ContractId Trade
+      controller requestTo
+        do
+          checkBalance <- fetchByKey @Account (requestTo)
+          assertMsg "transfer asset is more than holdings" (checkBalance._2.balance >= quantity)
+          tradeId <- create this with
+            approveStatus = True
+          exercise checkBalance._1 Withdraw
+            with
+              amount = quantity
+          return tradeId
+    
+    choice CompleteAction : ()
+      controller requestFrom
+        do
+          fromAccount <- fetchByKey @Account (requestFrom)
+          exercise fromAccount._1 Deposite with
+            amount = quantity
+          archive self

@@ -5,37 +5,31 @@ import DA.Optional (isNone)
 
 template AddToWallet
   with
-    holderLocateIn : Party
     accountHolder : Party
     balance : Int
-    afterDistribute : Int
 
   where
-    signatory holderLocateIn , accountHolder
+    signatory  accountHolder
     ensure balance >= 0
 
     choice AddWallet : ContractId Account
       controller accountHolder
         do
-          isExists <- lookupByKey @Account (holderLocateIn, accountHolder)
+          isExists <- lookupByKey @Account (accountHolder)
           if(isNone isExists) then
             do
               create Account
                 with
-                  holderLocateIn = holderLocateIn
                   accountHolder = accountHolder
                   balance =  balance
-                  afterDistribute = afterDistribute
           else
             do
-              fetchData <- fetchByKey @Account (holderLocateIn, accountHolder)
+              fetchData <- fetchByKey @Account (accountHolder)
               archive fetchData._1
               create Account
                 with
-                  holderLocateIn = holderLocateIn
                   accountHolder = accountHolder
                   balance = fetchData._2.balance + balance
-                  afterDistribute = fetchData._2.afterDistribute + afterDistribute
     
 
 
