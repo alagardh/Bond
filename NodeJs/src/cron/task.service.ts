@@ -3,6 +3,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { TokenizationService } from 'src/tokenization/tokenization.service.';
 import { Tokenization } from 'src/utils/tokenization';
+import 'dotenv/config';
 
 @Injectable()
 export class TaskService {
