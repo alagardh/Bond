@@ -80,10 +80,9 @@ template Trade
               amount = quantity
           return tradeId
     
-    choice CompleteAction : ()
+    choice CompleteAction : ContractId Account
       controller requestFrom
         do
           fromAccount <- fetchByKey @Account (requestFrom)
           exercise fromAccount._1 Deposite with
             amount = quantity
-          archive self
