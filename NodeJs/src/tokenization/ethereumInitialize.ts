@@ -13,7 +13,7 @@ let web3 : any;
 @Injectable()
 export class EthereumInitialize {
      
-  public async initiConnection(){
+  public initiConnection(){
     const provider = new HDWalletProvider(
       process.env.MNEMONIC,
       process.env.API_KEY,
@@ -21,7 +21,7 @@ export class EthereumInitialize {
   
     web3 = new Web3(provider);
   
-    ethContract = new web3.eth.Contract(JSON.parse(ASSET_MIGRATION.abi), process.env.ETH_CONTRACT);
+    return new web3.eth.Contract(JSON.parse(ASSET_MIGRATION.abi), process.env.ETH_CONTRACT);
 
   }
 }

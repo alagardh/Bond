@@ -11,30 +11,18 @@ setup = script do
   bank <- allocatePartyWithHint "EuropeanBank" (PartyIdHint "EuropeanBank")
   gs <- allocatePartyWithHint "GSBank" (PartyIdHint "GSBank")
   bny <- allocatePartyWithHint "BNYMellon" (PartyIdHint "BNYMellon")
-  bofa <- allocatePartyWithHint "BankBofa" (PartyIdHint "BankBofa")
-  sant <- allocatePartyWithHint "BankSant" (PartyIdHint "BankSant")
-  investA <- allocatePartyWithHint "InvestorA" (PartyIdHint "InvestorA")
-  investB <- allocatePartyWithHint "InvestorB" (PartyIdHint "InvestorB")
-  investC <- allocatePartyWithHint "InvestorC" (PartyIdHint "InvestorC")
+  
     
   europeanBank <- validateUserId "EuropeanBank"
   gsbank <- validateUserId "GSBank"
   bnymellon <- validateUserId "BNYMellon"
-  bankbofa <- validateUserId "BankBofa"
-  banksant <- validateUserId "BankSant"
-  investorA <- validateUserId "InvestorA"
-  investorB <- validateUserId "InvestorB"
-  investorC <- validateUserId "InvestorC"
+  
 
   -- create user for seller and buyer
   createUser (User europeanBank (Some (bank))) [CanActAs (bank)]
   createUser (User gsbank (Some (gs))) [CanActAs (gs)]
   createUser (User bnymellon (Some (bny))) [CanActAs (bny)]
-  createUser (User bankbofa (Some (bofa))) [CanActAs (bofa)]
-  createUser (User banksant (Some (sant))) [CanActAs (sant)]
-  createUser (User investorA (Some (investA))) [CanActAs (investA)]
-  createUser (User investorB (Some (investB))) [CanActAs (investB)]
-  createUser (User investorC (Some (investC))) [CanActAs (investC)]
+  
 
 
   cid <- submit gs do
@@ -74,8 +62,7 @@ setup = script do
         requestTo = gs
         quantity = 123
         tradeDate = date 2024 Jun 14
-        senderParty = "adsdsd"
-        receiverParty = "ddfd"
+        tradeId = "ddfd"
 
   
 

@@ -24,8 +24,7 @@ template Account
         requestTo:Party
         quantity: Int
         tradeDate:Date
-        senderParty: Text
-        receiverParty: Text
+        tradeId: Text
       controller accountHolder
         do
           create Trade
@@ -35,8 +34,7 @@ template Account
               requestTo  = requestTo
               quantity = quantity
               tradeDate = tradeDate
-              senderParty = senderParty
-              receiverParty = receiverParty
+              tradeId = tradeId
               approveStatus = False
 
     choice Withdraw : ContractId Account
@@ -61,14 +59,13 @@ template Trade
     requestTo:Party
     quantity: Int
     tradeDate:Date
-    senderParty: Text
-    receiverParty: Text
+    tradeId : Text
     approveStatus: Bool
 
   where
     signatory requestFrom
     observer requestTo
-    key(requestFrom,requestTo,senderParty,receiverParty) : (Party,Party,Text,Text)
+    key(requestFrom,requestTo,tradeId) : (Party,Party,Text)
     maintainer key._1
 
     choice ApproveTrade: ContractId Trade
