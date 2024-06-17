@@ -1,0 +1,12 @@
+{
+    "name": "money-transfer",
+    "version": "0.11.0",
+    "description": "DAML to backend integration",
+    "main": "index.js",
+    "dependencies": {
+        "@digitalasset/daml-ledger": "0.11.0",
+        "@redstone-finance/evm-connector": "^0.3.6",
+        "redstone-api": "^0.4.11",
+        "uuid": "3.3.2"
+    }
+}
