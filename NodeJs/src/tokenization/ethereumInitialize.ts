@@ -14,12 +14,18 @@ let web3 : any;
 export class EthereumInitialize {
      
   public initiConnection(){
+
+    // Sepolia Connectivity
     const provider = new HDWalletProvider(
       process.env.MNEMONIC,
       process.env.API_KEY,
     );
   
     web3 = new Web3(provider);
+
+    // Besy connectivity
+    //    const web3 = new Web3(new Web3.providers.HttpProvider("http://127.0.0.1:8545"));
+
   
     return new web3.eth.Contract(JSON.parse(ASSET_MIGRATION.abi), process.env.ETH_CONTRACT);
 
